@@ -6,11 +6,18 @@ import (
 
 	"shared/proto"
 	"shared/utils"
+
+	"google.golang.org/grpc"
 )
 
 type UserService struct {
 	usecase users.UserUseCaseInterface
 	proto.UnimplementedUserServiceServer
+}
+
+func NewServer(grpcServer *grpc.Server, usecase users.UserUseCaseInterface) {
+	userGrpc := &UserService{usecase: usecase}
+	proto.RegisterUserServiceServer(grpcServer, userGrpc)
 }
 
 func NewUserService(uc users.UserUseCaseInterface) *UserService {

@@ -1,7 +1,7 @@
 package controller
 
 import (
-	usersProto "shared/proto"
+	usersProto "shared/proto/users"
 	users "userservice/business"
 )
 

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package books;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = ".;proto";
+
+service BookService {
+    rpc AddBook(BookRequest) returns (BaseResponse);
+    rpc EditBook(BookRequest) returns (BaseResponse);
+    rpc DeleteBook(BookIdRequest) returns (BaseResponse);
+    rpc GetBook(BookIdRequest) returns (BaseResponse);
+}
+
+message BookRequest {
+    int32 id = 1;
+    string title = 2;
+    string isbn = 3;
+    string publicationYear = 4;
+    string description = 5;
+}
+
+message BookIdRequest {
+    int32 id = 1;
+}
+
+message BookResponse {
+    int32 id = 1;
+    string title = 2;
+    string isbn = 3;
+    string publicationYear = 4;
+    string description = 5;
+    google.protobuf.Timestamp CreatedAt = 6;
+    google.protobuf.Timestamp UpdatedAt = 7;
+}
+
+message BaseResponse {
+  string message = 1;
+  BookResponse book = 2;
+}

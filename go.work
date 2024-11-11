@@ -4,4 +4,5 @@ use (
 	./gateway
 	./userservice
 	./shared
+	./bookservice
 )

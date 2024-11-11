@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"shared/proto"
+	"shared/proto/users"
 
 	"github.com/gin-gonic/gin"
 )

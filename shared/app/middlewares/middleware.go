@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"shared/proto"
+	"shared/proto/users"
 	"shared/utils"
 	"strconv"
 	"strings"

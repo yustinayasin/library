@@ -3,7 +3,7 @@ package routes
 import (
 	"log"
 	"os"
-	"shared/proto"
+	"shared/proto/users"
 
 	middleware "shared/app/middlewares"
 

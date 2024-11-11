@@ -4,7 +4,7 @@ import (
 	"context"
 	users "userservice/business"
 
-	"shared/proto"
+	proto "shared/proto/users"
 	"shared/utils"
 
 	"google.golang.org/grpc"
@@ -39,9 +39,8 @@ func (s *UserService) SignUp(ctx context.Context, req *proto.UserEditRequest) (*
 	}, nil
 }
 
-// Login handles user login functionality
 func (s *UserService) Login(ctx context.Context, req *proto.UserLoginRequest) (*proto.BaseResponse, error) {
-	userUseCase := ToUsecaseLogin(req) // assuming you have a ToUseCase() method
+	userUseCase := ToUsecaseLogin(req)
 	user, err := s.usecase.Login(*userUseCase)
 	if err != nil {
 		return nil, utils.NewGrpcError(err)
@@ -55,7 +54,7 @@ func (s *UserService) Login(ctx context.Context, req *proto.UserLoginRequest) (*
 
 func (s *UserService) EditUser(ctx context.Context, req *proto.UserEditRequest) (*proto.BaseResponse, error) {
 	userId := req.GetId()
-	userEdit := ToUsecaseEdit(req) // assuming ToUseCase converts to business layer object
+	userEdit := ToUsecaseEdit(req)
 	user, err := s.usecase.EditUser(*userEdit, int(userId))
 	if err != nil {
 		return nil, utils.NewGrpcError(err)

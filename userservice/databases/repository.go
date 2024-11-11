@@ -27,10 +27,6 @@ func (repo *UserRepository) SignUp(user users.User) (users.User, error) {
 		return users.User{}, result.Error
 	}
 
-	if result.Error != nil {
-		return users.User{}, result.Error
-	}
-
 	return userDB.ToUsecase(), nil
 }
 
@@ -89,7 +85,7 @@ func (repo *UserRepository) DeleteUser(id int) (users.User, error) {
 	result := repo.Db.Delete(&userDb, id)
 
 	if result.Error != nil {
-		return users.User{}, errors.New("user not found")
+		return users.User{}, errors.New("Delete failed")
 	}
 
 	return userDb.ToUsecase(), nil

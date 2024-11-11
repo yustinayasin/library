@@ -2,7 +2,7 @@ package users
 
 import (
 	"log"
-	"shared/proto"
+	"shared/proto/users"
 
 	"google.golang.org/grpc"
 )

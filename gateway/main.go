@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 	middleware "shared/app/middlewares"
-	"shared/proto"
+	"shared/proto/users"
 	"strconv"
 
 	"github.com/joho/godotenv"

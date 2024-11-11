@@ -2,7 +2,9 @@ syntax = "proto3";
 
 package users;
 
-option go_package = "library/shared/proto;proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = ".;proto";
 
 service UserService {
     rpc SignUp(UserSignUpRequest) returns (UserResponse);
@@ -13,27 +15,39 @@ service UserService {
 }
 
 message UserSignUpRequest {
-    string username = 1;
+    string email = 1;
     string password = 2;
 }
 
 message UserLoginRequest {
-    string username = 1;
+    string email = 1;
     string password = 2;
 }
 
 message UserEditRequest {
-    string username = 1;
-    string email = 2;
+  int32 id = 1;
+    string name = 2;
+    string email = 3;
+    string password = 4;
 }
 
 message UserIdRequest {
-    int32 user_id = 1;
+    int32 id = 1;
 }
 
 message UserResponse {
-    int32 user_id = 1;
-    string username = 2;
+    int32 id = 1;
+    string name = 2;
     string email = 3;
-    string token = 4;
+    string password = 4;
+    string token = 5;
+    int32	RoleId = 6;
+    string Role = 7;
+    google.protobuf.Timestamp CreatedAt = 8;
+    google.protobuf.Timestamp UpdatedAt = 9;
+}
+
+message BaseResponse {
+  string message = 1;
+  UserResponse user = 2;
 }

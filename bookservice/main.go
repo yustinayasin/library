@@ -9,9 +9,12 @@ import (
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 
-	usecase "bookservice/business"
-	handler "bookservice/controller"
-	repo "bookservice/databases"
+	usecaseBooks "bookservice/business/books"
+	usecaseBooksStocks "bookservice/business/booksstocks"
+	handlerBooks "bookservice/controller/books"
+	handlerBooksStocks "bookservice/controller/booksstocks"
+	repoBooks "bookservice/databases/books"
+	repoBooksStocks "bookservice/databases/booksstocks"
 	"bookservice/helpers"
 )
 
@@ -38,18 +41,25 @@ func main() {
 	grpcServer := grpc.NewServer()
 
 	bookUseCase := initBookServer(db)
-	handler.NewServer(grpcServer, bookUseCase)
+	booksStocksUseCase := initBooksStocksServer(db)
+	handlerBooks.NewServer(grpcServer, bookUseCase)
+	handlerBooksStocks.NewServer(grpcServer, booksStocksUseCase)
 
 	log.Fatal(grpcServer.Serve(lis))
 }
 
-func initBookServer(db *gorm.DB) usecase.BookUseCaseInterface {
-	bookRepo := repo.NewBookRepository(db)
-	return usecase.NewUseCase(bookRepo)
+func initBookServer(db *gorm.DB) usecaseBooks.BookUseCaseInterface {
+	bookRepo := repoBooks.NewBookRepository(db)
+	return usecaseBooks.NewUseCase(bookRepo)
+}
+
+func initBooksStocksServer(db *gorm.DB) usecaseBooksStocks.BooksStocksUseCaseInterface {
+	booksStocksRepo := repoBooksStocks.NewBooksStocksRepository(db)
+	return usecaseBooksStocks.NewUseCase(booksStocksRepo)
 }
 
 func migrations(db *gorm.DB) {
-	err := db.AutoMigrate(&repo.Book{})
+	err := db.AutoMigrate(&repoBooks.Book{}, &repoBooksStocks.BooksStocks{})
 	if err != nil {
 		fmt.Println(err)
 	} else {

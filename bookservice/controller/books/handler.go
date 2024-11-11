@@ -1,7 +1,7 @@
 package controller
 
 import (
-	books "bookservice/business"
+	books "bookservice/business/books"
 	"context"
 
 	proto "shared/proto/books"

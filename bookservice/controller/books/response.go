@@ -1,7 +1,7 @@
 package controller
 
 import (
-	books "bookservice/business"
+	books "bookservice/business/books"
 	booksProto "shared/proto/books"
 
 	"google.golang.org/protobuf/types/known/timestamppb"

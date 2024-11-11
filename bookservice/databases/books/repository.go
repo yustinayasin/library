@@ -1,7 +1,7 @@
 package books
 
 import (
-	books "bookservice/business"
+	books "bookservice/business/books"
 	"errors"
 
 	"gorm.io/gorm"

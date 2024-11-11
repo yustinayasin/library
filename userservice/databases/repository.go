@@ -37,7 +37,7 @@ func (repo *UserRepository) SignUp(user users.User) (users.User, error) {
 func (repo *UserRepository) Login(user users.User) (users.User, error) {
 	userDB := FromUsecase(user)
 
-	result := repo.Db.Where("email = ?", userDB.Email).Preload("Type").First(&userDB)
+	result := repo.Db.Where("email = ?", userDB.Email).Preload("Role").First(&userDB)
 
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
@@ -60,7 +60,7 @@ func (repo *UserRepository) EditUser(user users.User, id int) (users.User, error
 
 	var newUser User
 
-	result := repo.Db.Preload("Type").First(&newUser, id)
+	result := repo.Db.Preload("Role").First(&newUser, id)
 
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
@@ -72,9 +72,6 @@ func (repo *UserRepository) EditUser(user users.User, id int) (users.User, error
 	newUser.Email = userDb.Email
 	newUser.Password = userDb.Password
 	newUser.Name = userDb.Name
-	newUser.Address = userDb.Address
-	newUser.PhoneNumber = userDb.PhoneNumber
-	newUser.PostalCode = userDb.PostalCode
 
 	repo.Db.Save(&newUser)
 	return newUser.ToUsecase(), nil

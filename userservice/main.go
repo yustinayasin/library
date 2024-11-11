@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 
-	middleware "userservice/app/middlewares"
+	middleware "shared/app/middlewares"
 	usecase "userservice/business"
 	handler "userservice/controller"
 	repo "userservice/databases"
@@ -35,26 +35,24 @@ func main() {
 		log.Fatal(err)
 	}
 
-	migrations(db)
+	// migrations(db)
+	// repo.SeedRoles(db)
 
 	jwtConf := middleware.ConfigJWT{
 		SecretJWT:       secretJWT,
 		ExpiresDuration: expiresDurationInt,
 	}
 
-	// add a listener address
 	lis, err := net.Listen("tcp", ":5001")
 	if err != nil {
 		log.Fatalf("ERROR STARTING THE SERVER : %v", err)
 	}
 
-	// start the grpc server
 	grpcServer := grpc.NewServer()
 
 	userUseCase := initUserServer(db, jwtConf)
 	handler.NewServer(grpcServer, userUseCase)
 
-	// start serving to the address
 	log.Fatal(grpcServer.Serve(lis))
 }
 
@@ -64,7 +62,7 @@ func initUserServer(db *gorm.DB, jwtConf usecase.GeneratorToken) usecase.UserUse
 }
 
 func migrations(db *gorm.DB) {
-	err := db.AutoMigrate(&repo.User{})
+	err := db.AutoMigrate(&repo.User{}, &repo.Role{})
 	if err != nil {
 		fmt.Println(err)
 	} else {

@@ -25,17 +25,14 @@ func FromUsecaseRole(role users.Role) Role {
 }
 
 type User struct {
-	Id          int `gorm:"primaryKey;unique"`
-	Name        string
-	Email       string `gorm:"unique"`
-	Password    string
-	Address     string
-	PhoneNumber string
-	PostalCode  string
-	RoleId      int
-	Role        Role `gorm:"foreignKey:RoleId"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	Id        int `gorm:"primaryKey;unique"`
+	Name      string
+	Email     string `gorm:"unique"`
+	Password  string
+	RoleId    int
+	Role      Role      `gorm:"foreignKey:RoleId;references:Id"`
+	CreatedAt time.Time `gorm:"default:current_timestamp"`
+	UpdatedAt time.Time `gorm:"default:current_timestamp;on_update:current_timestamp"`
 }
 
 func (user User) ToUsecase() users.User {

@@ -1,13 +1,15 @@
 package middleware
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"net/http"
+	"shared/proto"
 	"shared/utils"
 	"strconv"
+	"strings"
 	"time"
-
-	users "userservice/business"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -78,20 +80,38 @@ func verifyToken(tokenString string, jwtConf ConfigJWT, c *gin.Context) (*jwt.To
 }
 
 // Auth for private routes
-func RequireAuth(next gin.HandlerFunc, jwtConf ConfigJWT, userRepoInterface users.UserRepoInterface) gin.HandlerFunc {
+func RequireAuth(next gin.HandlerFunc, jwtConf ConfigJWT, userClient proto.UserServiceClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Get the token from header
-		tokenString, err := c.Cookie("auth_token")
+		// Get token from cookies
+		// tokenString, err := c.Cookie("auth_token")
 
-		if err != nil {
+		// Get the token from header
+		authHeader := c.GetHeader("Authorization")
+
+		if authHeader == "" {
 			utils.ErrorResponseWithoutMessages(c, http.StatusUnauthorized, "You need to login first")
 			c.Abort()
 			return
 		}
 
+		parts := strings.Split(authHeader, " ")
+		if len(parts) != 2 || parts[0] != "Bearer" {
+			utils.ErrorResponseWithoutMessages(c, http.StatusUnauthorized, "Invalid Authorization header format")
+			c.Abort()
+			return
+		}
+
+		// if err != nil {
+		// 	fmt.Println(err)
+		// 	utils.ErrorResponseWithoutMessages(c, http.StatusUnauthorized, "You need to login first")
+		// 	c.Abort()
+		// 	return
+		// }
+
 		// Verify token
-		token, err := verifyToken(tokenString, jwtConf, c)
+		token, err := verifyToken(parts[1], jwtConf, c)
 		if err != nil {
+			fmt.Println(err)
 			utils.ErrorResponseWithoutMessages(c, http.StatusUnauthorized, "Invalid Token")
 			c.Abort()
 			return
@@ -111,8 +131,7 @@ func RequireAuth(next gin.HandlerFunc, jwtConf ConfigJWT, userRepoInterface user
 			return
 		}
 
-		// Find the user
-		// Access the "subs" claim and convert it to int
+		// Extract userId from claims
 		subsClaim, ok := claims["userId"].(float64)
 		if !ok {
 			utils.ErrorResponseWithoutMessages(c, http.StatusInternalServerError, "Failed to parse user ID")
@@ -120,37 +139,26 @@ func RequireAuth(next gin.HandlerFunc, jwtConf ConfigJWT, userRepoInterface user
 			return
 		}
 
-		// Convert subsClaim to int
 		subsInt := int(subsClaim)
 
-		userUseCase := &users.UserUseCase{
-			Repo: userRepoInterface,
-			Jwt:  jwtConf,
-		}
+		// Get user from gRPC service
+		ctx, cancel := context.WithTimeout(c, 5*time.Second)
+		defer cancel()
 
-		// Ensure userUseCase is not nil before calling methods on it
-		if userUseCase == nil {
-			utils.ErrorResponseWithoutMessages(c, http.StatusInternalServerError, "Failed to initialize user use case")
-			c.Abort()
-			return
-		}
-
-		user, err := userUseCase.GetUser(subsInt)
+		userResponse, err := userClient.GetUser(ctx, &proto.UserIdRequest{Id: int32(subsInt)})
 		if err != nil {
 			utils.ErrorResponseWithoutMessages(c, http.StatusInternalServerError, "Failed to fetch user data")
 			c.Abort()
 			return
 		}
 
-		// Attach the user to the request context
-		c.Set("user", user)
+		c.Set("user", userResponse.User)
 
-		// Call the next handler
 		next(c)
 	}
 }
 
-func RequireAuthAdmin(next gin.HandlerFunc, jwtConf ConfigJWT, userRepoInterface users.UserRepoInterface) gin.HandlerFunc {
+func RequireAuthAdmin(next gin.HandlerFunc, jwtConf ConfigJWT, userClient proto.UserServiceClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get the token from header
 		tokenString := c.GetHeader("Authorization")
@@ -184,8 +192,7 @@ func RequireAuthAdmin(next gin.HandlerFunc, jwtConf ConfigJWT, userRepoInterface
 			return
 		}
 
-		// Find the user
-		// Access the "subs" claim and convert it to int
+		// Extract userId from claims
 		subsClaim, ok := claims["userId"].(float64)
 		if !ok {
 			utils.ErrorResponseWithoutMessages(c, http.StatusInternalServerError, "Failed to parse user ID")
@@ -193,39 +200,27 @@ func RequireAuthAdmin(next gin.HandlerFunc, jwtConf ConfigJWT, userRepoInterface
 			return
 		}
 
-		// Convert subsClaim to int
 		subsInt := int(subsClaim)
 
-		userUseCase := &users.UserUseCase{
-			Repo: userRepoInterface,
-			Jwt:  jwtConf,
-		}
+		ctx, cancel := context.WithTimeout(c, 5*time.Second)
+		defer cancel()
 
-		// Ensure userUseCase is not nil before calling methods on it
-		if userUseCase == nil {
-			utils.ErrorResponseWithoutMessages(c, http.StatusInternalServerError, "Failed to initialize user use case")
-			c.Abort()
-			return
-		}
-
-		user, err := userUseCase.GetUser(subsInt)
-
+		userResponse, err := userClient.GetUser(ctx, &proto.UserIdRequest{Id: int32(subsInt)})
 		if err != nil {
 			utils.ErrorResponseWithoutMessages(c, http.StatusInternalServerError, "Failed to fetch user data")
 			c.Abort()
 			return
 		}
 
-		if user.RoleId != 1 {
+		// Check if user has admin role
+		if userResponse.User.RoleId != 1 {
 			utils.ErrorResponseWithoutMessages(c, http.StatusUnauthorized, "You don't have the authorization")
 			c.Abort()
 			return
 		}
 
-		// Attach the user to the request context
-		c.Set("user", user)
+		c.Set("user", userResponse.User)
 
-		// Call the next handler
 		next(c)
 	}
 }

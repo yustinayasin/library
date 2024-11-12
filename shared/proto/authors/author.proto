@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package authors;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = ".;proto";
+
+service AuthorService {
+    rpc AddAuthor(AuthorRequest) returns (BaseResponseAuthor);
+    rpc EditAuthor(AuthorRequest) returns (BaseResponseAuthor);
+    rpc DeleteAuthor(AuthorIdRequest) returns (BaseResponseAuthor);
+    rpc GetAuthor(AuthorIdRequest) returns (BaseResponseAuthor);
+    rpc GetAuthorExist(AuthorIdRequest) returns (AuthorResponseExist);
+}
+
+message AuthorRequest {
+    int32 id = 1;
+    string name = 2;
+    string bio = 3;
+    google.protobuf.Timestamp birthdate = 4;
+}
+
+message AuthorIdRequest {
+    int32 id = 1;
+}
+
+message AuthorResponse {
+    int32 id = 1;
+    string name = 2;
+    string bio = 3;
+    google.protobuf.Timestamp birthdate = 4;
+    google.protobuf.Timestamp CreatedAt = 5;
+    google.protobuf.Timestamp UpdatedAt = 6;
+}
+
+message BaseResponseAuthor {
+  string message = 1;
+  AuthorResponse author = 2;
+}
+
+message AuthorResponseExist {
+    bool exists = 1;
+}
+
+service AuthorsBooksService {
+    rpc AddAuthorsBooks(AuthorsBooksRequest) returns (BaseResponseAuthorBooks);
+    rpc EditAuthorsBooks(AuthorsBooksRequest) returns (BaseResponseAuthorBooks);
+    rpc DeleteAuthorsBooks(AuthorsBooksIdRequest) returns (BaseResponseAuthorBooks);
+    rpc GetAuthorsBooks(AuthorsBooksIdRequest) returns (BaseResponseAuthorBooks);
+}
+
+message AuthorsBooksRequest {
+    int32 authorId = 1;
+    int32 bookId = 2;
+}
+
+message AuthorsBooksIdRequest {
+    int32 id = 1;
+}
+
+message AuthorsBooksResponse {
+    int32 authorId = 1;
+    int32 bookId = 2;
+    google.protobuf.Timestamp CreatedAt = 6;
+    google.protobuf.Timestamp UpdatedAt = 7;
+}
+
+message BaseResponseAuthorBooks {
+  string message = 1;
+  AuthorsBooksResponse authorsbooks = 2;
+}

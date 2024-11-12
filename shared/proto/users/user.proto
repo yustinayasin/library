@@ -20,7 +20,7 @@ message UserLoginRequest {
 }
 
 message UserEditRequest {
-  int32 id = 1;
+    int32 id = 1;
     string name = 2;
     string email = 3;
     string password = 4;
@@ -45,4 +45,40 @@ message UserResponse {
 message BaseResponse {
   string message = 1;
   UserResponse user = 2;
+}
+
+service BorrowRecordsService {
+    rpc AddBorrowRecords(BorrowRecordsRequest) returns (BaseResponseBorrowRecords);
+    rpc EditBorrowRecords(BorrowRecordsRequest) returns (BaseResponseBorrowRecords);
+    rpc DeleteBorrowRecords(BorrowRecordsIdRequest) returns (BaseResponseBorrowRecords);
+    rpc GetBorrowRecords(BorrowRecordsIdRequest) returns (BaseResponseBorrowRecords);
+}
+
+message BorrowRecordsRequest {
+    int32 id = 1;
+    int32 userId = 2;
+    int32 bookId = 3;
+    google.protobuf.Timestamp borrowDate = 4;
+    google.protobuf.Timestamp returnDate = 5;
+    bool isReturn = 6;
+}
+
+message BorrowRecordsIdRequest {
+    int32 id = 1;
+}
+
+message BorrowRecordsResponse {
+    int32 id = 1;
+    int32 userId = 2;
+    int32 bookId = 3;
+    google.protobuf.Timestamp borrowDate = 4;
+    google.protobuf.Timestamp returnDate = 5;
+    bool isReturn = 6;
+    google.protobuf.Timestamp CreatedAt = 7;
+    google.protobuf.Timestamp UpdatedAt = 8;
+}
+
+message BaseResponseBorrowRecords {
+  string message = 1;
+  BorrowRecordsResponse borrowrecords = 2;
 }

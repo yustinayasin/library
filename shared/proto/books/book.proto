@@ -11,6 +11,7 @@ service BookService {
     rpc EditBook(BookRequest) returns (BaseResponseBook);
     rpc DeleteBook(BookIdRequest) returns (BaseResponseBook);
     rpc GetBook(BookIdRequest) returns (BaseResponseBook);
+    rpc GetBookExist(BookIdRequest) returns (BookResponseExist);
 }
 
 message BookRequest {
@@ -38,6 +39,11 @@ message BookResponse {
 message BaseResponseBook {
   string message = 1;
   BookResponse book = 2;
+}
+
+
+message BookResponseExist {
+    bool exists = 1;
 }
 
 service BooksStocksService {

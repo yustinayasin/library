@@ -2,7 +2,7 @@ package controller
 
 import (
 	"context"
-	users "userservice/business/users"
+	borrowrecords "userservice/business/borrowrecords"
 
 	proto "shared/proto/users"
 	"shared/utils"
@@ -10,84 +10,71 @@ import (
 	"google.golang.org/grpc"
 )
 
-type UserService struct {
-	usecase users.UserUseCaseInterface
-	proto.UnimplementedUserServiceServer
+type BorrowRecordService struct {
+	usecase borrowrecords.BorrowRecordUseCaseInterface
+	proto.UnimplementedBorrowRecordsServiceServer
 }
 
-func NewServer(grpcServer *grpc.Server, usecase users.UserUseCaseInterface) {
-	userGrpc := &UserService{usecase: usecase}
-	proto.RegisterUserServiceServer(grpcServer, userGrpc)
+func NewServer(grpcServer *grpc.Server, usecase borrowrecords.BorrowRecordUseCaseInterface) {
+	userGrpc := &BorrowRecordService{usecase: usecase}
+	proto.RegisterBorrowRecordsServiceServer(grpcServer, userGrpc)
 }
 
-func NewUserService(uc users.UserUseCaseInterface) *UserService {
-	return &UserService{
+func NewBorrowRecordService(uc borrowrecords.BorrowRecordUseCaseInterface) *BorrowRecordService {
+	return &BorrowRecordService{
 		usecase: uc,
 	}
 }
 
-func (s *UserService) SignUp(ctx context.Context, req *proto.UserEditRequest) (*proto.BaseResponse, error) {
-	userUseCase := ToUsecaseEdit(req)
-	user, err := s.usecase.SignUp(*userUseCase)
+func (s *BorrowRecordService) AddBorrowRecord(ctx context.Context, req *proto.BorrowRecordsRequest) (*proto.BaseResponseBorrowRecords, error) {
+	userUseCase := ToUsecase(req)
+	borrowRecord, err := s.usecase.AddBorrowRecord(*userUseCase)
 	if err != nil {
 		return nil, utils.NewGrpcError(err)
 	}
 
-	return &proto.BaseResponse{
-		Message: "User successfully created",
-		User:    FromUsecase(user),
+	return &proto.BaseResponseBorrowRecords{
+		Message:       "Borrow record successfully created",
+		Borrowrecords: FromUsecase(borrowRecord),
 	}, nil
 }
 
-func (s *UserService) Login(ctx context.Context, req *proto.UserLoginRequest) (*proto.BaseResponse, error) {
-	userUseCase := ToUsecaseLogin(req)
-	user, err := s.usecase.Login(*userUseCase)
-	if err != nil {
-		return nil, utils.NewGrpcError(err)
-	}
-
-	return &proto.BaseResponse{
-		Message: "User successfully login",
-		User:    FromUsecase(user),
-	}, nil
-}
-
-func (s *UserService) EditUser(ctx context.Context, req *proto.UserEditRequest) (*proto.BaseResponse, error) {
+func (s *BorrowRecordService) EditBorrowRecord(ctx context.Context, req *proto.BorrowRecordsRequest) (*proto.BaseResponseBorrowRecords, error) {
 	userId := req.GetId()
-	userEdit := ToUsecaseEdit(req)
-	user, err := s.usecase.EditUser(*userEdit, int(userId))
+	userEdit := ToUsecase(req)
+	borrowRecord, err := s.usecase.EditBorrowRecord(*userEdit, int(userId))
 	if err != nil {
 		return nil, utils.NewGrpcError(err)
 	}
 
-	return &proto.BaseResponse{
-		Message: "User successfully updated",
-		User:    FromUsecase(user),
+	return &proto.BaseResponseBorrowRecords{
+		Message:       "Borrow record successfully updated",
+		Borrowrecords: FromUsecase(borrowRecord),
 	}, nil
 }
 
-func (s *UserService) DeleteUser(ctx context.Context, req *proto.UserIdRequest) (*proto.BaseResponse, error) {
+func (s *BorrowRecordService) DeleteBorrowRecord(ctx context.Context, req *proto.BorrowRecordsRequest) (*proto.BaseResponseBorrowRecords, error) {
 	userId := req.Id
-	user, err := s.usecase.DeleteUser(int(userId))
+	borrowRecord, err := s.usecase.DeleteBorrowRecord(int(userId))
 	if err != nil {
 		return nil, utils.NewGrpcError(err)
 	}
 
-	return &proto.BaseResponse{
-		Message: "User successfully deleted",
-		User:    FromUsecase(user),
+	return &proto.BaseResponseBorrowRecords{
+		Message:       "Borrow record successfully deleted",
+		Borrowrecords: FromUsecase(borrowRecord),
 	}, nil
 }
 
-func (s *UserService) GetUser(ctx context.Context, req *proto.UserIdRequest) (*proto.BaseResponse, error) {
+func (s *BorrowRecordService) GetBorrowRecord(ctx context.Context, req *proto.BorrowRecordsRequest) (*proto.BaseResponseBorrowRecords, error) {
 	userId := req.GetId()
-	user, err := s.usecase.GetUser(int(userId))
+	borrowRecord, err := s.usecase.GetBorrowRecord(int(userId))
 	if err != nil {
 		return nil, utils.NewGrpcError(err)
 	}
 
-	return &proto.BaseResponse{
-		Message: "Successfully retrieved user",
-		User:    FromUsecase(user),
+	return &proto.BaseResponseBorrowRecords{
+		Message:       "Successfully retrieved borrow record",
+		Borrowrecords: FromUsecase(borrowRecord),
 	}, nil
 }

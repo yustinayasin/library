@@ -1,31 +1,31 @@
 package controller
 
 import (
-	usersProto "shared/proto/users"
-	users "userservice/business/users"
+	borrowRecordsProto "shared/proto/users"
+	borrowrecords "userservice/business/borrowrecords"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func FromUsecase(user users.User) *usersProto.UserResponse {
-	return &usersProto.UserResponse{
-		Id:        int32(user.Id),
-		Name:      user.Name,
-		Email:     user.Email,
-		Password:  user.Password,
-		Token:     user.Token,
-		RoleId:    int32(user.RoleId),
-		CreatedAt: timestamppb.New(user.CreatedAt),
-		UpdatedAt: timestamppb.New(user.UpdatedAt),
+func FromUsecase(borrowrecords borrowrecords.BorrowRecord) *borrowRecordsProto.BorrowRecordsResponse {
+	return &borrowRecordsProto.BorrowRecordsResponse{
+		Id:         int32(borrowrecords.Id),
+		UserId:     int32(borrowrecords.UserId),
+		BookId:     int32(borrowrecords.BookId),
+		BorrowDate: timestamppb.New(borrowrecords.BorrowDate),
+		ReturnDate: timestamppb.New(borrowrecords.ReturnDate),
+		IsReturn:   borrowrecords.IsReturn,
+		CreatedAt:  timestamppb.New(borrowrecords.CreatedAt),
+		UpdatedAt:  timestamppb.New(borrowrecords.UpdatedAt),
 	}
 }
 
-func FromUsecaseList(user []users.User) []*usersProto.UserResponse {
-	var userResponse []*usersProto.UserResponse
+func FromUsecaseList(user []borrowrecords.BorrowRecord) []*borrowRecordsProto.BorrowRecordsResponse {
+	var borrowRecordResponse []*borrowRecordsProto.BorrowRecordsResponse
 
 	for _, v := range user {
-		userResponse = append(userResponse, FromUsecase(v))
+		borrowRecordResponse = append(borrowRecordResponse, FromUsecase(v))
 	}
 
-	return userResponse
+	return borrowRecordResponse
 }

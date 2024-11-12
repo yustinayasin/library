@@ -2,6 +2,7 @@ package books
 
 import (
 	"errors"
+	proto "shared/proto/books"
 )
 
 type BookUseCase struct {
@@ -96,4 +97,18 @@ func (bookUseCase *BookUseCase) GetBook(id int) (Book, error) {
 	}
 
 	return bookRepo, nil
+}
+
+func (bookUseCase *BookUseCase) GetBookExist(id int) (proto.BookResponseExist, error) {
+	if id == 0 {
+		return proto.BookResponseExist{Exists: false}, errors.New("Book ID cannot be empty")
+	}
+
+	_, err := bookUseCase.Repo.GetBook(id)
+
+	if err != nil {
+		return proto.BookResponseExist{Exists: false}, err
+	}
+
+	return proto.BookResponseExist{Exists: true}, nil
 }

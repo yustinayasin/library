@@ -3,6 +3,7 @@ package books
 import (
 	books "bookservice/business/books"
 	"errors"
+	proto "shared/proto/books"
 
 	"gorm.io/gorm"
 )
@@ -80,4 +81,16 @@ func (repo *BookRepository) GetBook(id int) (books.Book, error) {
 	}
 
 	return bookDb.ToUsecase(), nil
+}
+
+func (repo *BookRepository) GetBookExist(id int) (proto.BookResponseExist, error) {
+	var bookDb Book
+
+	resultFind := repo.Db.First(&bookDb, id)
+
+	if resultFind.Error != nil {
+		return proto.BookResponseExist{Exists: false}, errors.New("book not found")
+	}
+
+	return proto.BookResponseExist{Exists: true}, nil
 }

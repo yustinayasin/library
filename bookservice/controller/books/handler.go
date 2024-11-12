@@ -84,3 +84,15 @@ func (s *BookService) GetBook(ctx context.Context, req *proto.BookIdRequest) (*p
 		Book:    FromUsecase(book),
 	}, nil
 }
+
+func (s *BookService) GetBookExist(ctx context.Context, req *proto.BookIdRequest) (*proto.BookResponseExist, error) {
+	bookId := req.GetId()
+
+	_, err := s.usecase.GetBookExist(int(bookId))
+
+	if err != nil {
+		return &proto.BookResponseExist{Exists: false}, utils.NewGrpcError(err)
+	}
+
+	return &proto.BookResponseExist{Exists: true}, nil
+}

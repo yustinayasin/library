@@ -271,3 +271,219 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "user.proto",
 }
+
+const (
+	BorrowRecordsService_AddBorrowRecords_FullMethodName    = "/users.BorrowRecordsService/AddBorrowRecords"
+	BorrowRecordsService_EditBorrowRecords_FullMethodName   = "/users.BorrowRecordsService/EditBorrowRecords"
+	BorrowRecordsService_DeleteBorrowRecords_FullMethodName = "/users.BorrowRecordsService/DeleteBorrowRecords"
+	BorrowRecordsService_GetBorrowRecords_FullMethodName    = "/users.BorrowRecordsService/GetBorrowRecords"
+)
+
+// BorrowRecordsServiceClient is the client API for BorrowRecordsService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type BorrowRecordsServiceClient interface {
+	AddBorrowRecords(ctx context.Context, in *BorrowRecordsRequest, opts ...grpc.CallOption) (*BaseResponseBorrowRecords, error)
+	EditBorrowRecords(ctx context.Context, in *BorrowRecordsRequest, opts ...grpc.CallOption) (*BaseResponseBorrowRecords, error)
+	DeleteBorrowRecords(ctx context.Context, in *BorrowRecordsIdRequest, opts ...grpc.CallOption) (*BaseResponseBorrowRecords, error)
+	GetBorrowRecords(ctx context.Context, in *BorrowRecordsIdRequest, opts ...grpc.CallOption) (*BaseResponseBorrowRecords, error)
+}
+
+type borrowRecordsServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewBorrowRecordsServiceClient(cc grpc.ClientConnInterface) BorrowRecordsServiceClient {
+	return &borrowRecordsServiceClient{cc}
+}
+
+func (c *borrowRecordsServiceClient) AddBorrowRecords(ctx context.Context, in *BorrowRecordsRequest, opts ...grpc.CallOption) (*BaseResponseBorrowRecords, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BaseResponseBorrowRecords)
+	err := c.cc.Invoke(ctx, BorrowRecordsService_AddBorrowRecords_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *borrowRecordsServiceClient) EditBorrowRecords(ctx context.Context, in *BorrowRecordsRequest, opts ...grpc.CallOption) (*BaseResponseBorrowRecords, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BaseResponseBorrowRecords)
+	err := c.cc.Invoke(ctx, BorrowRecordsService_EditBorrowRecords_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *borrowRecordsServiceClient) DeleteBorrowRecords(ctx context.Context, in *BorrowRecordsIdRequest, opts ...grpc.CallOption) (*BaseResponseBorrowRecords, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BaseResponseBorrowRecords)
+	err := c.cc.Invoke(ctx, BorrowRecordsService_DeleteBorrowRecords_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *borrowRecordsServiceClient) GetBorrowRecords(ctx context.Context, in *BorrowRecordsIdRequest, opts ...grpc.CallOption) (*BaseResponseBorrowRecords, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BaseResponseBorrowRecords)
+	err := c.cc.Invoke(ctx, BorrowRecordsService_GetBorrowRecords_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// BorrowRecordsServiceServer is the server API for BorrowRecordsService service.
+// All implementations must embed UnimplementedBorrowRecordsServiceServer
+// for forward compatibility.
+type BorrowRecordsServiceServer interface {
+	AddBorrowRecords(context.Context, *BorrowRecordsRequest) (*BaseResponseBorrowRecords, error)
+	EditBorrowRecords(context.Context, *BorrowRecordsRequest) (*BaseResponseBorrowRecords, error)
+	DeleteBorrowRecords(context.Context, *BorrowRecordsIdRequest) (*BaseResponseBorrowRecords, error)
+	GetBorrowRecords(context.Context, *BorrowRecordsIdRequest) (*BaseResponseBorrowRecords, error)
+	mustEmbedUnimplementedBorrowRecordsServiceServer()
+}
+
+// UnimplementedBorrowRecordsServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedBorrowRecordsServiceServer struct{}
+
+func (UnimplementedBorrowRecordsServiceServer) AddBorrowRecords(context.Context, *BorrowRecordsRequest) (*BaseResponseBorrowRecords, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddBorrowRecords not implemented")
+}
+func (UnimplementedBorrowRecordsServiceServer) EditBorrowRecords(context.Context, *BorrowRecordsRequest) (*BaseResponseBorrowRecords, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditBorrowRecords not implemented")
+}
+func (UnimplementedBorrowRecordsServiceServer) DeleteBorrowRecords(context.Context, *BorrowRecordsIdRequest) (*BaseResponseBorrowRecords, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBorrowRecords not implemented")
+}
+func (UnimplementedBorrowRecordsServiceServer) GetBorrowRecords(context.Context, *BorrowRecordsIdRequest) (*BaseResponseBorrowRecords, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBorrowRecords not implemented")
+}
+func (UnimplementedBorrowRecordsServiceServer) mustEmbedUnimplementedBorrowRecordsServiceServer() {}
+func (UnimplementedBorrowRecordsServiceServer) testEmbeddedByValue()                              {}
+
+// UnsafeBorrowRecordsServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to BorrowRecordsServiceServer will
+// result in compilation errors.
+type UnsafeBorrowRecordsServiceServer interface {
+	mustEmbedUnimplementedBorrowRecordsServiceServer()
+}
+
+func RegisterBorrowRecordsServiceServer(s grpc.ServiceRegistrar, srv BorrowRecordsServiceServer) {
+	// If the following call pancis, it indicates UnimplementedBorrowRecordsServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&BorrowRecordsService_ServiceDesc, srv)
+}
+
+func _BorrowRecordsService_AddBorrowRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BorrowRecordsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BorrowRecordsServiceServer).AddBorrowRecords(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BorrowRecordsService_AddBorrowRecords_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BorrowRecordsServiceServer).AddBorrowRecords(ctx, req.(*BorrowRecordsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BorrowRecordsService_EditBorrowRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BorrowRecordsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BorrowRecordsServiceServer).EditBorrowRecords(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BorrowRecordsService_EditBorrowRecords_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BorrowRecordsServiceServer).EditBorrowRecords(ctx, req.(*BorrowRecordsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BorrowRecordsService_DeleteBorrowRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BorrowRecordsIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BorrowRecordsServiceServer).DeleteBorrowRecords(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BorrowRecordsService_DeleteBorrowRecords_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BorrowRecordsServiceServer).DeleteBorrowRecords(ctx, req.(*BorrowRecordsIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BorrowRecordsService_GetBorrowRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BorrowRecordsIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BorrowRecordsServiceServer).GetBorrowRecords(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BorrowRecordsService_GetBorrowRecords_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BorrowRecordsServiceServer).GetBorrowRecords(ctx, req.(*BorrowRecordsIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// BorrowRecordsService_ServiceDesc is the grpc.ServiceDesc for BorrowRecordsService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var BorrowRecordsService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "users.BorrowRecordsService",
+	HandlerType: (*BorrowRecordsServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "AddBorrowRecords",
+			Handler:    _BorrowRecordsService_AddBorrowRecords_Handler,
+		},
+		{
+			MethodName: "EditBorrowRecords",
+			Handler:    _BorrowRecordsService_EditBorrowRecords_Handler,
+		},
+		{
+			MethodName: "DeleteBorrowRecords",
+			Handler:    _BorrowRecordsService_DeleteBorrowRecords_Handler,
+		},
+		{
+			MethodName: "GetBorrowRecords",
+			Handler:    _BorrowRecordsService_GetBorrowRecords_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "user.proto",
+}

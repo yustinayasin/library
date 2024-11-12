@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BookService_AddBook_FullMethodName    = "/books.BookService/AddBook"
-	BookService_EditBook_FullMethodName   = "/books.BookService/EditBook"
-	BookService_DeleteBook_FullMethodName = "/books.BookService/DeleteBook"
-	BookService_GetBook_FullMethodName    = "/books.BookService/GetBook"
+	BookService_AddBook_FullMethodName      = "/books.BookService/AddBook"
+	BookService_EditBook_FullMethodName     = "/books.BookService/EditBook"
+	BookService_DeleteBook_FullMethodName   = "/books.BookService/DeleteBook"
+	BookService_GetBook_FullMethodName      = "/books.BookService/GetBook"
+	BookService_GetBookExist_FullMethodName = "/books.BookService/GetBookExist"
 )
 
 // BookServiceClient is the client API for BookService service.
@@ -33,6 +34,7 @@ type BookServiceClient interface {
 	EditBook(ctx context.Context, in *BookRequest, opts ...grpc.CallOption) (*BaseResponseBook, error)
 	DeleteBook(ctx context.Context, in *BookIdRequest, opts ...grpc.CallOption) (*BaseResponseBook, error)
 	GetBook(ctx context.Context, in *BookIdRequest, opts ...grpc.CallOption) (*BaseResponseBook, error)
+	GetBookExist(ctx context.Context, in *BookIdRequest, opts ...grpc.CallOption) (*BookResponseExist, error)
 }
 
 type bookServiceClient struct {
@@ -83,6 +85,16 @@ func (c *bookServiceClient) GetBook(ctx context.Context, in *BookIdRequest, opts
 	return out, nil
 }
 
+func (c *bookServiceClient) GetBookExist(ctx context.Context, in *BookIdRequest, opts ...grpc.CallOption) (*BookResponseExist, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BookResponseExist)
+	err := c.cc.Invoke(ctx, BookService_GetBookExist_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BookServiceServer is the server API for BookService service.
 // All implementations must embed UnimplementedBookServiceServer
 // for forward compatibility.
@@ -91,6 +103,7 @@ type BookServiceServer interface {
 	EditBook(context.Context, *BookRequest) (*BaseResponseBook, error)
 	DeleteBook(context.Context, *BookIdRequest) (*BaseResponseBook, error)
 	GetBook(context.Context, *BookIdRequest) (*BaseResponseBook, error)
+	GetBookExist(context.Context, *BookIdRequest) (*BookResponseExist, error)
 	mustEmbedUnimplementedBookServiceServer()
 }
 
@@ -112,6 +125,9 @@ func (UnimplementedBookServiceServer) DeleteBook(context.Context, *BookIdRequest
 }
 func (UnimplementedBookServiceServer) GetBook(context.Context, *BookIdRequest) (*BaseResponseBook, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBook not implemented")
+}
+func (UnimplementedBookServiceServer) GetBookExist(context.Context, *BookIdRequest) (*BookResponseExist, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBookExist not implemented")
 }
 func (UnimplementedBookServiceServer) mustEmbedUnimplementedBookServiceServer() {}
 func (UnimplementedBookServiceServer) testEmbeddedByValue()                     {}
@@ -206,6 +222,24 @@ func _BookService_GetBook_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BookService_GetBookExist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BookIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookServiceServer).GetBookExist(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BookService_GetBookExist_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookServiceServer).GetBookExist(ctx, req.(*BookIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BookService_ServiceDesc is the grpc.ServiceDesc for BookService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +262,10 @@ var BookService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetBook",
 			Handler:    _BookService_GetBook_Handler,
+		},
+		{
+			MethodName: "GetBookExist",
+			Handler:    _BookService_GetBookExist_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -41,7 +41,6 @@ message BaseResponseBook {
   BookResponse book = 2;
 }
 
-
 message BookResponseExist {
     bool exists = 1;
 }

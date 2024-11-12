@@ -16,9 +16,10 @@ import (
 )
 
 type Gateway struct {
-	UserClient      protoUser.UserServiceClient
-	BookClient      protoBook.BookServiceClient
-	BookStockClient protoBook.BooksStocksServiceClient
+	UserClient         protoUser.UserServiceClient
+	BookClient         protoBook.BookServiceClient
+	BookStockClient    protoBook.BooksStocksServiceClient
+	BorrowRecordClient protoUser.BorrowRecordsServiceClient
 }
 
 func NewGateway(userServiceAddr, bookServiceAddr string) (*Gateway, error) {
@@ -27,6 +28,7 @@ func NewGateway(userServiceAddr, bookServiceAddr string) (*Gateway, error) {
 		return nil, fmt.Errorf("failed to connect to user service: %v", err)
 	}
 	userClient := protoUser.NewUserServiceClient(userConn)
+	borrowRecordClient := protoUser.NewBorrowRecordsServiceClient(userConn)
 
 	bookConn, err := grpc.Dial(bookServiceAddr, grpc.WithInsecure())
 	if err != nil {
@@ -36,9 +38,10 @@ func NewGateway(userServiceAddr, bookServiceAddr string) (*Gateway, error) {
 	bookStockClient := protoBook.NewBooksStocksServiceClient(bookConn)
 
 	return &Gateway{
-		UserClient:      userClient,
-		BookClient:      bookClient,
-		BookStockClient: bookStockClient,
+		UserClient:         userClient,
+		BookClient:         bookClient,
+		BookStockClient:    bookStockClient,
+		BorrowRecordClient: borrowRecordClient,
 	}, nil
 }
 
@@ -70,5 +73,5 @@ func main() {
 		log.Fatalf("Failed to connect to user service: %v", err)
 	}
 
-	routes.RouteRegister(jwtConf, gateway.UserClient)
+	routes.RouteRegister(jwtConf, gateway.UserClient, gateway.BookClient, gateway.BookStockClient, gateway.BorrowRecordClient)
 }

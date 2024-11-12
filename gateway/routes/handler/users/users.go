@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"shared/proto/users"
+	proto "shared/proto/users"
 
 	"github.com/gin-gonic/gin"
 )
@@ -70,10 +70,15 @@ func LoginHandler(userClient proto.UserServiceClient) gin.HandlerFunc {
 func EditUserHandler(userClient proto.UserServiceClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req proto.UserEditRequest
-		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Binding failed"})
+
+		userID, err := strconv.Atoi(c.Param("userId"))
+
+		if userID == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "userID is required"})
 			return
 		}
+
+		req.Id = int32(userID)
 
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
@@ -90,10 +95,15 @@ func EditUserHandler(userClient proto.UserServiceClient) gin.HandlerFunc {
 func DeleteUserHandler(userClient proto.UserServiceClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req proto.UserIdRequest
-		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Binding failed"})
+
+		userID, err := strconv.Atoi(c.Param("userId"))
+
+		if userID == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "userID is required"})
 			return
 		}
+
+		req.Id = int32(userID)
 
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()

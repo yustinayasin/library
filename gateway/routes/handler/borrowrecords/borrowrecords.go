@@ -8,12 +8,13 @@ import (
 	"strconv"
 	"time"
 
+	protoBook "shared/proto/books"
 	proto "shared/proto/users"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AddBorrowRecords(bookStocksClient proto.BorrowRecordsServiceClient) gin.HandlerFunc {
+func AddBorrowRecords(borrowRecordClient proto.BorrowRecordsServiceClient, bookClient protoBook.BookServiceClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req proto.BorrowRecordsRequest
 
@@ -35,33 +36,44 @@ func AddBorrowRecords(bookStocksClient proto.BorrowRecordsServiceClient) gin.Han
 
 		defer cancel()
 
-		res, err := bookStocksClient.AddBorrowRecords(ctx, &req)
+		// check if book exist
+		bookReq := &protoBook.BookIdRequest{
+			Id: req.BookId,
+		}
+		bookRes, err := bookClient.GetBookExist(context.Background(), bookReq)
+		if err != nil || !bookRes.Exists {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Book not found"})
+			return
+		}
+
+		res, err := borrowRecordClient.AddBorrowRecords(ctx, &req)
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Add book failed"})
 			return
 		}
+
 		c.JSON(http.StatusOK, gin.H{"message": res.Message, "user": res.Borrowrecords})
 	}
 }
 
-func EditBorrowRecords(bookStocksClient proto.BorrowRecordsServiceClient) gin.HandlerFunc {
+func EditBorrowRecords(borrowRecordClient proto.BorrowRecordsServiceClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req proto.BorrowRecordsRequest
 
-		bookStocksID, err := strconv.Atoi(c.Param("borrowRecordId"))
+		borrowRecordID, err := strconv.Atoi(c.Param("borrowRecordId"))
 
-		if bookStocksID == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "bookStocksID is required"})
+		if borrowRecordID == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "borrowRecordID is required"})
 			return
 		}
 
-		req.Id = int32(bookStocksID)
+		req.Id = int32(borrowRecordID)
 
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
-		res, err := bookStocksClient.EditBorrowRecords(ctx, &req)
+		res, err := borrowRecordClient.EditBorrowRecords(ctx, &req)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Edit failed"})
 			return
@@ -70,23 +82,23 @@ func EditBorrowRecords(bookStocksClient proto.BorrowRecordsServiceClient) gin.Ha
 	}
 }
 
-func DeleteBorrowRecords(bookStocksClient proto.BorrowRecordsServiceClient) gin.HandlerFunc {
+func DeleteBorrowRecords(borrowRecordClient proto.BorrowRecordsServiceClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req proto.BorrowRecordsIdRequest
 
-		bookStocksID, err := strconv.Atoi(c.Param("borrowRecordId"))
+		borrowRecordID, err := strconv.Atoi(c.Param("borrowRecordId"))
 
-		if bookStocksID == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "bookStocksID is required"})
+		if borrowRecordID == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "borrowRecordID is required"})
 			return
 		}
 
-		req.Id = int32(bookStocksID)
+		req.Id = int32(borrowRecordID)
 
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
-		res, err := bookStocksClient.DeleteBorrowRecords(ctx, &req)
+		res, err := borrowRecordClient.DeleteBorrowRecords(ctx, &req)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Delete failed"})
 			return
@@ -95,23 +107,23 @@ func DeleteBorrowRecords(bookStocksClient proto.BorrowRecordsServiceClient) gin.
 	}
 }
 
-func GetBorrowRecords(bookStocksClient proto.BorrowRecordsServiceClient) gin.HandlerFunc {
+func GetBorrowRecords(borrowRecordClient proto.BorrowRecordsServiceClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req proto.BorrowRecordsIdRequest
 
-		bookStocksID, err := strconv.Atoi(c.Param("borrowRecordId"))
+		borrowRecordID, err := strconv.Atoi(c.Param("borrowRecordId"))
 
-		if bookStocksID == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "bookStocksID is required"})
+		if borrowRecordID == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "borrowRecordID is required"})
 			return
 		}
 
-		req.Id = int32(bookStocksID)
+		req.Id = int32(borrowRecordID)
 
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
-		res, err := bookStocksClient.GetBorrowRecords(ctx, &req)
+		res, err := borrowRecordClient.GetBorrowRecords(ctx, &req)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Retrieve user failed"})
 			return

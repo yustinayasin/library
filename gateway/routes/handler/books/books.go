@@ -120,3 +120,30 @@ func GetBook(bookClient proto.BookServiceClient) gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{"user": res.Book})
 	}
 }
+
+func GetBookExist(bookClient proto.BookServiceClient) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req proto.BookIdRequest
+
+		bookID, err := strconv.Atoi(c.Param("bookId"))
+
+		if bookID == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "bookID is required"})
+			return
+		}
+
+		req.Id = int32(bookID)
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		res, err := bookClient.GetBook(ctx, &req)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Retrieve user failed"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"user": res.Book})
+	}
+}

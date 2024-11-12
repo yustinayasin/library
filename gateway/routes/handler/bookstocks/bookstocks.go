@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AddBooksStocks(bookStocksClient proto.BooksStocksServiceClient) gin.HandlerFunc {
+func AddBooksStocks(bookStocksClient proto.BooksStocksServiceClient, bookClient proto.BookServiceClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req proto.BooksStocksRequest
 
@@ -34,6 +34,16 @@ func AddBooksStocks(bookStocksClient proto.BooksStocksServiceClient) gin.Handler
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
 		defer cancel()
+
+		// check if book exist
+		bookReq := &proto.BookIdRequest{
+			Id: req.BookId,
+		}
+		bookRes, err := bookClient.GetBookExist(context.Background(), bookReq)
+		if err != nil || !bookRes.Exists {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Book not found"})
+			return
+		}
 
 		res, err := bookStocksClient.AddBooksStocks(ctx, &req)
 

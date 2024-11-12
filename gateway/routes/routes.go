@@ -49,7 +49,7 @@ func RouteRegister(JWTConfig middleware.ConfigJWT, userClient protoUsers.UserSer
 
 	bookstock := router.Group("/bookstock")
 	{
-		bookstock.POST("/", middleware.RequireAuthAdmin(handlerBooksStocks.AddBooksStocks(bookStockClient), JWTConfig, userClient))
+		bookstock.POST("/", middleware.RequireAuthAdmin(handlerBooksStocks.AddBooksStocks(bookStockClient, bookClient), JWTConfig, userClient))
 		bookstock.PUT("/:bookStockId", middleware.RequireAuthAdmin(handlerBooksStocks.EditBooksStocks(bookStockClient), JWTConfig, userClient))
 		bookstock.DELETE("/:bookStockId", middleware.RequireAuthAdmin(handlerBooksStocks.DeleteBooksStocks(bookStockClient), JWTConfig, userClient))
 		bookstock.GET("/:bookStockId", middleware.RequireAuthAdmin(handlerBooksStocks.GetBooksStocks(bookStockClient), JWTConfig, userClient))
@@ -57,7 +57,7 @@ func RouteRegister(JWTConfig middleware.ConfigJWT, userClient protoUsers.UserSer
 
 	borrowrecord := router.Group("/borrowrecord")
 	{
-		borrowrecord.POST("/", middleware.RequireAuthAdmin(handlerBorrowRecord.AddBorrowRecords(borrowRecordClient), JWTConfig, userClient))
+		borrowrecord.POST("/", middleware.RequireAuthAdmin(handlerBorrowRecord.AddBorrowRecords(borrowRecordClient, bookClient), JWTConfig, userClient))
 		borrowrecord.PUT("/:borrowRecordId", middleware.RequireAuthAdmin(handlerBorrowRecord.EditBorrowRecords(borrowRecordClient), JWTConfig, userClient))
 		borrowrecord.DELETE("/:borrowRecordId", middleware.RequireAuthAdmin(handlerBorrowRecord.DeleteBorrowRecords(borrowRecordClient), JWTConfig, userClient))
 		borrowrecord.GET("/:borrowRecordId", middleware.RequireAuthAdmin(handlerBorrowRecord.GetBorrowRecords(borrowRecordClient), JWTConfig, userClient))

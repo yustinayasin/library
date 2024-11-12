@@ -2,7 +2,7 @@ package controller
 
 import (
 	usersProto "shared/proto/users"
-	users "userservice/business"
+	users "userservice/business/users"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 )

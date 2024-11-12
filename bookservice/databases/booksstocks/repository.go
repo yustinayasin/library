@@ -17,66 +17,66 @@ func NewBooksStocksRepository(database *gorm.DB) booksStocks.BooksStocksRepoInte
 	}
 }
 
-func (repo *BooksStocksRepository) AddBooksStocks(book booksStocks.BooksStocks) (booksStocks.BooksStocks, error) {
+func (repo *BooksStocksRepository) AddBooksStocks(book booksStocks.BookStock) (booksStocks.BookStock, error) {
 	bookDB := FromUsecase(book)
 
 	result := repo.Db.Create(&bookDB)
 
 	if result.Error != nil {
-		return booksStocks.BooksStocks{}, result.Error
+		return booksStocks.BookStock{}, result.Error
 	}
 
 	return bookDB.ToUsecase(), nil
 }
 
-func (repo *BooksStocksRepository) EditBooksStocks(book booksStocks.BooksStocks, id int) (booksStocks.BooksStocks, error) {
-	bookDb := FromUsecase(book)
+func (repo *BooksStocksRepository) EditBooksStocks(book booksStocks.BookStock, id int) (booksStocks.BookStock, error) {
+	bookStockdDB := FromUsecase(book)
 
-	var newBooksStocks BooksStocks
+	var newBooksStocks BookStock
 
 	result := repo.Db.First(&newBooksStocks, id)
 
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
-			return booksStocks.BooksStocks{}, errors.New("BooksStocks not found")
+			return booksStocks.BookStock{}, errors.New("BookStock not found")
 		}
-		return booksStocks.BooksStocks{}, errors.New("error in database")
+		return booksStocks.BookStock{}, errors.New("error in database")
 	}
 
-	newBooksStocks.BookId = bookDb.BookId
-	newBooksStocks.TotalStock = bookDb.TotalStock
-	newBooksStocks.AvailableStock = bookDb.AvailableStock
+	newBooksStocks.BookId = bookStockdDB.BookId
+	newBooksStocks.TotalStock = bookStockdDB.TotalStock
+	newBooksStocks.AvailableStock = bookStockdDB.AvailableStock
 
 	repo.Db.Save(&newBooksStocks)
 	return newBooksStocks.ToUsecase(), nil
 }
 
-func (repo *BooksStocksRepository) DeleteBooksStocks(id int) (booksStocks.BooksStocks, error) {
-	var bookDb BooksStocks
+func (repo *BooksStocksRepository) DeleteBooksStocks(id int) (booksStocks.BookStock, error) {
+	var bookStockdDB BookStock
 
-	resultFind := repo.Db.First(&bookDb, id)
+	resultFind := repo.Db.First(&bookStockdDB, id)
 
 	if resultFind.Error != nil {
-		return booksStocks.BooksStocks{}, errors.New("book not found")
+		return booksStocks.BookStock{}, errors.New("book not found")
 	}
 
-	result := repo.Db.Delete(&bookDb, id)
+	result := repo.Db.Delete(&bookStockdDB, id)
 
 	if result.Error != nil {
-		return booksStocks.BooksStocks{}, errors.New("Delete failed")
+		return booksStocks.BookStock{}, errors.New("Delete failed")
 	}
 
-	return bookDb.ToUsecase(), nil
+	return bookStockdDB.ToUsecase(), nil
 }
 
-func (repo *BooksStocksRepository) GetBooksStocks(id int) (booksStocks.BooksStocks, error) {
-	var bookDb BooksStocks
+func (repo *BooksStocksRepository) GetBooksStocks(id int) (booksStocks.BookStock, error) {
+	var bookStockdDB BookStock
 
-	resultFind := repo.Db.First(&bookDb, id)
+	resultFind := repo.Db.First(&bookStockdDB, id)
 
 	if resultFind.Error != nil {
-		return booksStocks.BooksStocks{}, errors.New("book not found")
+		return booksStocks.BookStock{}, errors.New("book not found")
 	}
 
-	return bookDb.ToUsecase(), nil
+	return bookStockdDB.ToUsecase(), nil
 }

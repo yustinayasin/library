@@ -2,7 +2,7 @@ package users
 
 import (
 	"time"
-	users "userservice/business"
+	users "userservice/business/users"
 )
 
 type Role struct {

@@ -59,7 +59,7 @@ func initBooksStocksServer(db *gorm.DB) usecaseBooksStocks.BooksStocksUseCaseInt
 }
 
 func migrations(db *gorm.DB) {
-	err := db.AutoMigrate(&repoBooks.Book{}, &repoBooksStocks.BooksStocks{})
+	err := db.AutoMigrate(&repoBooks.Book{}, &repoBooksStocks.BookStock{})
 	if err != nil {
 		fmt.Println(err)
 	} else {

@@ -12,9 +12,9 @@ import (
 	"gorm.io/gorm"
 
 	middleware "shared/app/middlewares"
-	usecase "userservice/business"
-	handler "userservice/controller"
-	repo "userservice/databases"
+	usecase "userservice/business/users"
+	handler "userservice/controller/users"
+	repo "userservice/databases/users"
 	"userservice/helpers"
 )
 

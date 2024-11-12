@@ -5,8 +5,8 @@ import (
 	booksStocksProto "shared/proto/booksstocks"
 )
 
-func ToUsecase(book *booksStocksProto.BooksStocksRequest) *booksstocks.BooksStocks {
-	return &booksstocks.BooksStocks{
+func ToUsecase(book *booksStocksProto.BooksStocksRequest) *booksstocks.BookStock {
+	return &booksstocks.BookStock{
 		BookId:         int(book.BookId),
 		TotalStock:     int(book.TotalStock),
 		AvailableStock: int(book.AvailableStock),

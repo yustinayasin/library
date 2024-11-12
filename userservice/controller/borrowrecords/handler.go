@@ -2,7 +2,7 @@ package controller
 
 import (
 	"context"
-	users "userservice/business"
+	users "userservice/business/users"
 
 	proto "shared/proto/users"
 	"shared/utils"

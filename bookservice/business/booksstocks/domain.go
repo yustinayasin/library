@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type BooksStocks struct {
+type BookStock struct {
 	Id             int
 	BookId         int
 	TotalStock     int
@@ -14,15 +14,15 @@ type BooksStocks struct {
 }
 
 type BooksStocksUseCaseInterface interface {
-	AddBooksStocks(booksStocks BooksStocks) (BooksStocks, error)
-	EditBooksStocks(booksStocks BooksStocks, id int) (BooksStocks, error)
-	DeleteBooksStocks(id int) (BooksStocks, error)
-	GetBooksStocks(id int) (BooksStocks, error)
+	AddBooksStocks(booksStocks BookStock) (BookStock, error)
+	EditBooksStocks(booksStocks BookStock, id int) (BookStock, error)
+	DeleteBooksStocks(id int) (BookStock, error)
+	GetBooksStocks(id int) (BookStock, error)
 }
 
 type BooksStocksRepoInterface interface {
-	AddBooksStocks(booksStocks BooksStocks) (BooksStocks, error)
-	EditBooksStocks(booksStocks BooksStocks, id int) (BooksStocks, error)
-	DeleteBooksStocks(id int) (BooksStocks, error)
-	GetBooksStocks(id int) (BooksStocks, error)
+	AddBooksStocks(booksStocks BookStock) (BookStock, error)
+	EditBooksStocks(booksStocks BookStock, id int) (BookStock, error)
+	DeleteBooksStocks(id int) (BookStock, error)
+	GetBooksStocks(id int) (BookStock, error)
 }

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type BooksStocks struct {
+type BookStock struct {
 	Id             int `gorm:"primaryKey;unique"`
 	BookId         int `gorm:"foreignKey:BookId;references:Id"`
 	TotalStock     int `gorm:"unique"`
@@ -14,8 +14,8 @@ type BooksStocks struct {
 	UpdatedAt      time.Time `gorm:"default:current_timestamp;on_update:current_timestamp"`
 }
 
-func (book BooksStocks) ToUsecase() booksStocks.BooksStocks {
-	return booksStocks.BooksStocks{
+func (book BookStock) ToUsecase() booksStocks.BookStock {
+	return booksStocks.BookStock{
 		Id:             book.Id,
 		BookId:         book.BookId,
 		TotalStock:     book.TotalStock,
@@ -25,8 +25,8 @@ func (book BooksStocks) ToUsecase() booksStocks.BooksStocks {
 	}
 }
 
-func ToUsecaseList(book []BooksStocks) []booksStocks.BooksStocks {
-	var newBooksStockss []booksStocks.BooksStocks
+func ToUsecaseList(book []BookStock) []booksStocks.BookStock {
+	var newBooksStockss []booksStocks.BookStock
 
 	for _, v := range book {
 		newBooksStockss = append(newBooksStockss, v.ToUsecase())
@@ -34,8 +34,8 @@ func ToUsecaseList(book []BooksStocks) []booksStocks.BooksStocks {
 	return newBooksStockss
 }
 
-func FromUsecase(book booksStocks.BooksStocks) BooksStocks {
-	return BooksStocks{
+func FromUsecase(book booksStocks.BookStock) BookStock {
+	return BookStock{
 		Id:             book.Id,
 		BookId:         book.BookId,
 		TotalStock:     book.TotalStock,

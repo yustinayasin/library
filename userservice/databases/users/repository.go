@@ -2,7 +2,7 @@ package users
 
 import (
 	"errors"
-	users "userservice/business"
+	users "userservice/business/users"
 	"userservice/helpers"
 
 	"gorm.io/gorm"

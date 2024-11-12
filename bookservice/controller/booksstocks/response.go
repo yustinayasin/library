@@ -7,7 +7,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func FromUsecase(book booksstocks.BooksStocks) *booksStocksProto.BooksStocksResponse {
+func FromUsecase(book booksstocks.BookStock) *booksStocksProto.BooksStocksResponse {
 	return &booksStocksProto.BooksStocksResponse{
 		Id:             int32(book.Id),
 		BookId:         int32(book.BookId),
@@ -18,7 +18,7 @@ func FromUsecase(book booksstocks.BooksStocks) *booksStocksProto.BooksStocksResp
 	}
 }
 
-func FromUsecaseList(book []booksstocks.BooksStocks) []*booksStocksProto.BooksStocksResponse {
+func FromUsecaseList(book []booksstocks.BookStock) []*booksStocksProto.BooksStocksResponse {
 	var bookResponse []*booksStocksProto.BooksStocksResponse
 
 	for _, v := range book {

@@ -26,20 +26,20 @@ func NewBookService(uc books.BookUseCaseInterface) *BookService {
 	}
 }
 
-func (s *BookService) AddBook(ctx context.Context, req *proto.BookRequest) (*proto.BaseResponse, error) {
+func (s *BookService) AddBook(ctx context.Context, req *proto.BookRequest) (*proto.BaseResponseBook, error) {
 	bookUseCase := ToUsecase(req)
 	book, err := s.usecase.AddBook(*bookUseCase)
 	if err != nil {
 		return nil, utils.NewGrpcError(err)
 	}
 
-	return &proto.BaseResponse{
+	return &proto.BaseResponseBook{
 		Message: "Book successfully created",
 		Book:    FromUsecase(book),
 	}, nil
 }
 
-func (s *BookService) EditBook(ctx context.Context, req *proto.BookRequest) (*proto.BaseResponse, error) {
+func (s *BookService) EditBook(ctx context.Context, req *proto.BookRequest) (*proto.BaseResponseBook, error) {
 	bookId := req.GetId()
 	bookEdit := ToUsecase(req)
 
@@ -49,13 +49,13 @@ func (s *BookService) EditBook(ctx context.Context, req *proto.BookRequest) (*pr
 		return nil, utils.NewGrpcError(err)
 	}
 
-	return &proto.BaseResponse{
+	return &proto.BaseResponseBook{
 		Message: "Book successfully updated",
 		Book:    FromUsecase(book),
 	}, nil
 }
 
-func (s *BookService) DeleteBook(ctx context.Context, req *proto.BookIdRequest) (*proto.BaseResponse, error) {
+func (s *BookService) DeleteBook(ctx context.Context, req *proto.BookIdRequest) (*proto.BaseResponseBook, error) {
 	bookId := req.Id
 
 	book, err := s.usecase.DeleteBook(int(bookId))
@@ -64,13 +64,13 @@ func (s *BookService) DeleteBook(ctx context.Context, req *proto.BookIdRequest) 
 		return nil, utils.NewGrpcError(err)
 	}
 
-	return &proto.BaseResponse{
+	return &proto.BaseResponseBook{
 		Message: "Book successfully deleted",
 		Book:    FromUsecase(book),
 	}, nil
 }
 
-func (s *BookService) GetBook(ctx context.Context, req *proto.BookIdRequest) (*proto.BaseResponse, error) {
+func (s *BookService) GetBook(ctx context.Context, req *proto.BookIdRequest) (*proto.BaseResponseBook, error) {
 	bookId := req.GetId()
 
 	book, err := s.usecase.GetBook(int(bookId))
@@ -79,7 +79,7 @@ func (s *BookService) GetBook(ctx context.Context, req *proto.BookIdRequest) (*p
 		return nil, utils.NewGrpcError(err)
 	}
 
-	return &proto.BaseResponse{
+	return &proto.BaseResponseBook{
 		Message: "Successfully retrieved book",
 		Book:    FromUsecase(book),
 	}, nil

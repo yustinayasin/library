@@ -7,10 +7,10 @@ import "google/protobuf/timestamp.proto";
 option go_package = ".;proto";
 
 service BookService {
-    rpc AddBook(BookRequest) returns (BaseResponse);
-    rpc EditBook(BookRequest) returns (BaseResponse);
-    rpc DeleteBook(BookIdRequest) returns (BaseResponse);
-    rpc GetBook(BookIdRequest) returns (BaseResponse);
+    rpc AddBook(BookRequest) returns (BaseResponseBook);
+    rpc EditBook(BookRequest) returns (BaseResponseBook);
+    rpc DeleteBook(BookIdRequest) returns (BaseResponseBook);
+    rpc GetBook(BookIdRequest) returns (BaseResponseBook);
 }
 
 message BookRequest {
@@ -35,7 +35,39 @@ message BookResponse {
     google.protobuf.Timestamp UpdatedAt = 7;
 }
 
-message BaseResponse {
+message BaseResponseBook {
   string message = 1;
   BookResponse book = 2;
+}
+
+service BooksStocksService {
+    rpc AddBooksStocks(BooksStocksRequest) returns (BaseResponseBookStocks);
+    rpc EditBooksStocks(BooksStocksRequest) returns (BaseResponseBookStocks);
+    rpc DeleteBooksStocks(BooksStocksIdRequest) returns (BaseResponseBookStocks);
+    rpc GetBooksStocks(BooksStocksIdRequest) returns (BaseResponseBookStocks);
+}
+
+message BooksStocksRequest {
+    int32 id = 1;
+    int32 bookId = 2;
+    int32 totalStock = 3;
+    int32 availableStock = 4;
+}
+
+message BooksStocksIdRequest {
+    int32 id = 1;
+}
+
+message BooksStocksResponse {
+    int32 id = 1;
+    int32 bookId = 2;
+    int32 totalStock = 3;
+    int32 availableStock = 4;
+    google.protobuf.Timestamp CreatedAt = 6;
+    google.protobuf.Timestamp UpdatedAt = 7;
+}
+
+message BaseResponseBookStocks {
+  string message = 1;
+  BooksStocksResponse booksstocks = 2;
 }

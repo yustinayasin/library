@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"gateway/routes"
 	"log"
 	"os"
 	middleware "shared/app/middlewares"
-	"shared/proto/users"
+	protoBook "shared/proto/books"
+	protoUser "shared/proto/users"
 	"strconv"
 
 	"github.com/joho/godotenv"
@@ -14,16 +16,30 @@ import (
 )
 
 type Gateway struct {
-	UserClient proto.UserServiceClient
+	UserClient      protoUser.UserServiceClient
+	BookClient      protoBook.BookServiceClient
+	BookStockClient protoBook.BooksStocksServiceClient
 }
 
-func NewGateway(userServiceAddr string) (*Gateway, error) {
-	conn, err := grpc.Dial(userServiceAddr, grpc.WithInsecure())
+func NewGateway(userServiceAddr, bookServiceAddr string) (*Gateway, error) {
+	userConn, err := grpc.Dial(userServiceAddr, grpc.WithInsecure())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to connect to user service: %v", err)
 	}
-	userClient := proto.NewUserServiceClient(conn)
-	return &Gateway{UserClient: userClient}, nil
+	userClient := protoUser.NewUserServiceClient(userConn)
+
+	bookConn, err := grpc.Dial(bookServiceAddr, grpc.WithInsecure())
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to book service: %v", err)
+	}
+	bookClient := protoBook.NewBookServiceClient(bookConn)
+	bookStockClient := protoBook.NewBooksStocksServiceClient(bookConn)
+
+	return &Gateway{
+		UserClient:      userClient,
+		BookClient:      bookClient,
+		BookStockClient: bookStockClient,
+	}, nil
 }
 
 func main() {
@@ -46,10 +62,9 @@ func main() {
 		micro.Name("Gateway"),
 		micro.Address(":8080"),
 	)
-
 	service.Init()
 
-	gateway, err := NewGateway("localhost:5001")
+	gateway, err := NewGateway("localhost:5001", "localhost:5002")
 
 	if err != nil {
 		log.Fatalf("Failed to connect to user service: %v", err)
